@@ -1,0 +1,71 @@
+.cst-navbar {
+    z-index: 1000;
+}
+.overlay {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+::ng-deep .min-h-84 {
+    min-height: var(--header-height) !important;
+}
+::ng-deep .top-84 {
+    top: var(--header-height) !important;
+}
+::ng-deep .cst-float .p-float-label {
+    height: 100% !important;
+}
+::ng-deep .cst-calendar-input input {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+::ng-deep .cst-dock .p-dock-list-container {
+    background-color: var(--surface-overlay) !important;
+    border-radius: 0;
+    border-left: 0;
+    border-bottom: 0;
+    border-right: 0;
+    padding: 0;
+}
+::ng-deep .cst-dock .p-dock-list-container .p-dock-item {
+    padding: 0 !important;
+    flex: 0 0 auto;
+    width: 20%;
+}
+::ng-deep .cst-dock .p-dock-list-container .p-dock-item .p-dock-link {
+    width: 100% !important;
+    text-decoration: none;
+    color: var(--text-color) !important;
+}
+::ng-deep .cst-dock .p-dock-list-container .p-dock-list {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+}
+::ng-deep .cst-navbar .p-menubar{
+    border-radius: 0px;
+    padding: 0px;
+}
+::ng-deep .cst-navbar .p-menubar-start{
+    min-width: 100%;
+}
+::ng-deep .fill-900{
+    fill: var(--text-color) !important;
+}
+::ng-deep .cst-badge .p-badge {
+    font-size: 0.6rem !important;
+    min-width: 1rem !important;
+    height: 1rem !important;
+    line-height: 0.9rem !important;
+    padding: 0 0.25rem !important;
+}
+::ng-deep .cst-notifications-overlaypanel .p-overlaypanel-content {
+    height: 30rem !important;
+}

@@ -1,0 +1,146 @@
+<app-go-back-button class="md:hidden" label="General Informations"></app-go-back-button>
+<div class="p-5 md:pt-0 flex flex-column flex-auto">
+    <div>
+        <div class="hidden md:block text-color font-medium text-xl mb-4">General Informations</div>
+        <div class="surface-card p-4 shadow-2 border-round">
+            <form [formGroup]="editForm" (ngSubmit)="onSubmit()" class="grid">
+                <div class="col-12 mt-2">
+                    @if(this.loadingUserData){
+                        <p-skeleton styleClass="w-full h-3rem" />
+                    } @else {
+                        <p-inputGroup>
+                        <p-inputGroupAddon>
+                            <span class="material-icons">person</span>
+                        </p-inputGroupAddon>
+                        <p-floatLabel class="w-full h-full cst-float">
+                            <input 
+                            id="username" 
+                            type="text" 
+                            placeholder="Username" 
+                            pInputText 
+                            class="w-full border-noround-left" 
+                            [ngClass]="{'ng-invalid ng-dirty': username?.invalid && (username?.dirty || username?.touched)}"
+                            formControlName="username"/>
+                            <label for="username">Username *</label>
+                        </p-floatLabel>
+                        </p-inputGroup>
+                        @if(username?.invalid && (username?.dirty || username?.touched)){
+                            @if(username?.errors?.['required']){
+                                <small class="p-error block">Username is required.</small>
+                            }
+                            @if(username?.errors?.['minlength']){
+                                <small class="p-error block">Username must be at least 6 characters.</small>
+                            }
+                            @if(username?.errors?.['maxlength']){
+                                <small class="p-error block">Username must be at most 24 characters.</small>
+                            }
+                            @if(username?.errors?.['pattern']){
+                                <small class="p-error block">Username cannot contain the '&#64;' symbol.</small>
+                            }
+                        }
+                    }
+                </div>
+                <p-divider class="w-full"></p-divider>
+                <div class="col-12 lg:col-6 mt-2">
+                    @if(this.loadingUserData){
+                        <p-skeleton styleClass="w-full h-3rem" />
+                    } @else {
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <span class="material-icons">calendar_month</span>
+                            </p-inputGroupAddon>
+                            <p-floatLabel class="w-full h-full cst-float">
+                                <p-calendar 
+                                    id="date_of_birth" 
+                                    placeholder="Date of birth" 
+                                    class="w-full border-noround-left" 
+                                    [ngClass]="{'ng-invalid ng-dirty': dateOfBirth?.invalid && (dateOfBirth?.dirty || dateOfBirth?.touched)}"
+                                    formControlName="date_of_birth"
+                                    dateFormat="dd.mm.yy"
+                                    styleClass="w-full h-full border-noround-left cst-calendar-input"/>
+                                <label for="date_of_birth">Date of birth</label>
+                            </p-floatLabel>
+                        </p-inputGroup>
+                        @if(dateOfBirth?.invalid && (dateOfBirth?.dirty || dateOfBirth?.touched)){
+                            @if(dateOfBirth?.errors?.['underage']){
+                                <small class="p-error block">You must be at least 16 years old.</small>
+                            }
+                        }
+                    }
+                </div>
+                <div class="col-12 lg:col-6 mt-2">
+                    @if(this.loadingUserData){
+                        <p-skeleton styleClass="w-full h-3rem" />
+                    } @else {
+                        <p-inputGroup>
+                            <p-inputGroupAddon>
+                                <span class="material-icons">call</span>
+                            </p-inputGroupAddon>
+                            <p-floatLabel class="w-full h-full cst-float">
+                                <input 
+                                    id="phone" 
+                                    type="text" 
+                                    placeholder="Phone" 
+                                    pInputText 
+                                    class="w-full border-noround-left" 
+                                    [ngClass]="{'ng-invalid ng-dirty': phone?.invalid && (phone?.dirty || phone?.touched)}"
+                                    formControlName="phone"/>
+                                <label for="phone">Phone</label>
+                            </p-floatLabel>
+                        </p-inputGroup>
+                        @if(phone?.invalid && (phone?.dirty || phone?.touched)){
+                            @if(phone?.errors?.['maxlength']){
+                                <small class="p-error block">Phone number can't be longer than 25 characters.</small>
+                            }
+                        }
+                    }
+                </div>
+                <p-divider class="w-full"></p-divider>
+                <div class="col-12 pt-0 pb-0">
+                    <span class="text-xl text-color font-bold">Privacy</span>
+                </div>
+                <div class="col-12 field mb-0">
+                    <label class="font-medium mr-1" for="privacy">Message options</label>
+                    <span 
+                        class="p-badge p-component p-badge-no-gutter"
+                        pTooltip="Choose who can send you messages."
+                        tooltipPosition="bottom"
+                        tabindex="0"
+                        tooltipEvent="focus"
+                    >
+                        ?
+                    </span>
+                    @if(this.loadingUserData){
+                        <p-skeleton styleClass="w-full h-3rem" />
+                    } @else {
+                        <p-dropdown 
+                            formControlName="selectedMsgOption"
+                            [options]="msg_options"
+                            optionLabel="text"
+                            placeholder="Message options" 
+                            class="w-full"
+                            styleClass="w-full"
+                            [ngClass]="{'ng-invalid ng-dirty': selectedMsgOption?.invalid && (selectedMsgOption?.dirty || selectedMsgOption?.touched)}"
+                            inputId="privacy"/>
+                        @if(selectedMsgOption?.invalid && (selectedMsgOption?.dirty || selectedMsgOption?.touched)){
+                            @if(selectedMsgOption?.errors?.['required']){
+                                <small class="p-error block">Message option is required.</small>
+                            }
+                        }
+                    }
+                </div>
+                <p-divider class="w-full"></p-divider>
+                <div class="col-12">
+                    @if(this.editAJAX){
+                        <p-progressBar mode="indeterminate"></p-progressBar>
+                    } @else {
+                        <button type="submit" [disabled]="!editForm.valid" pButton pRipple class="w-auto">
+                            <span class="p-button-icon p-button-icon-left material-icons" aria-hidden="true">save</span>
+                            <span class="p-button-label">Save Changes</span>
+                        </button>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

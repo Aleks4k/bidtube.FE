@@ -1,0 +1,198 @@
+<div class="h-full flex flex-column md:flex-row flex-auto">
+    <!--Sidenav na kompjuteru - FIXED je i ima dva listenera za njegovu visinu znam da nije dobro ali ne postoji bolje rešenje nažalist.-->
+    <div class="hidden md:block md:w-15rem lg:w-20rem surface-overlay flex-shrink-0 z-1 select-none">
+        @if(this.categoryDataLoaded){
+            <p-tree
+                id="category"
+                [value]="categories" 
+                [(selection)]="selectedCategory"
+                selectionMode="single" 
+                class="block"
+                class="w-full h-full block"
+                (onNodeSelect)="selectCategoryFromTree($event)"
+                (onNodeUnselect)="unselectCategoryFromTree()"
+                styleClass="w-full h-full border-noround p-0 overflow-y-auto" />
+        } @else {
+            <div class="flex flex-column gap-2 p-2 h-full overflow-y-hidden">
+                <div *ngFor="let step of steps_skeleton">
+                    <p-skeleton styleClass="w-full h-3rem" />
+                </div>
+            </div>
+        }
+    </div>
+    <div class="md:hidden surface-overlay shadow-2">
+        <div class="flex flex-row h-full gap-3 align-items-start px-2 py-1 w-screen overflow-x-scroll">
+            <div class="pr-2 border-right-2 surface-border flex flex-column align-items-center justify-content-start h-6rem">
+                <p-button (onClick)="isCategorySideBarVisible = true;" [rounded]="true" [outlined]="true" class="w-3rem h-3rem" styleClass="w-full h-full text-color">
+                    <ng-template pTemplate="icon">
+                        <span class="material-icons">
+                            category
+                        </span>
+                    </ng-template>
+                </p-button>
+                <small class="w-4rem text-center word-break">All Categories</small>
+            </div>
+            @if(!this.categoryDataLoaded){
+                <div *ngFor="let step of steps_skeleton">
+                    <div class="flex flex-column align-items-center justify-content-start h-6rem gap-1">
+                        <p-skeleton shape="circle" size="3rem" />
+                        <p-skeleton width="4rem" borderRadius="16px" />
+                    </div>
+                </div>
+            } @else {
+                @for(item of categories_model_filtered_by_icon; track item.icon_name){
+                    <div class="flex flex-column align-items-center justify-content-start h-6rem">
+                        <p-button 
+                            (click)="selectCategory(item.key)" 
+                            [rounded]="true" 
+                            [outlined]="true" 
+                            class="w-3rem h-3rem"
+                            [styleClass]="'w-full h-full ' + (item.key !== this.selectedCategory_filter?.key ? 'text-color' : '')"
+                            styleClass="w-full h-full text-color"
+                        >
+                            <ng-template pTemplate="icon">
+                                <span class="material-icons">
+                                    {{ item.icon_name }}
+                                </span>
+                            </ng-template>
+                        </p-button>
+                        <small class="w-4rem text-center word-break">{{ item.label }}</small>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+    <p-sidebar 
+        [(visible)]="isCategorySideBarVisible" 
+        position="bottom" 
+        class="md:hidden"
+        styleClass="h-70"
+    >
+        <ng-template pTemplate="header">
+            <span class="text-xl text-color font-bold">Choose category</span>
+        </ng-template>
+        <ng-template pTemplate="content">
+            @if(this.categoryDataLoaded){
+                <p-tree
+                    id="category_sm"
+                    [value]="categories" 
+                    [(selection)]="selectedCategory"
+                    selectionMode="single" 
+                    class="w-full h-full block"
+                    styleClass="w-full h-full overflow-y-auto p-0" />
+            } @else {
+                <div class="flex flex-column gap-2 p-2 h-full overflow-y-hidden">
+                    <div *ngFor="let step of steps_skeleton">
+                        <p-skeleton styleClass="w-full h-3rem" />
+                    </div>
+                </div>
+            }
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="flex justify-content-end">
+                <p-button label="Select" (onClick)="isCategorySideBarVisible = false;selectCategoryFromMobileTree();">
+                    <ng-template pTemplate="icon">
+                        <span class="material-icons">
+                            check
+                        </span>
+                    </ng-template>
+                </p-button>
+            </div>
+        </ng-template>
+    </p-sidebar>
+    <!--MAIN CONTENT-->
+    <div id="cst-main-content" class="w-full h-full flex flex-column align-items-center mt-1">
+        @if(this.auctionDataLoaded){
+            @if(this.auctions === undefined || this.auctions.length === 0){
+                <div class="flex flex-column w-full h-full align-items-center justify-content-center">
+                    <span class="material-icons text-8xl">
+                        production_quantity_limits
+                    </span>
+                    <span class="text-5xl text-color font-bold mt-1">No auctions</span>
+                    <span class="text-sm text-color-secondary">There are currently no active auctions</span>
+                </div>
+            } @else {
+                <div class="w-full md:w-30rem flex px-2 md:px-0">
+                    @if(this.selectedCategory_filter){
+                        <span class="text-xl text-color font-bold align-content-center">{{this.selectedCategory_filter.label}}</span>
+                        <span class="text-xs md:text-sm text-color-secondary align-content-center ml-1">({{this.total_records}} items)</span>
+                    } @else {
+                        <span class="text-base md:text-xl text-color align-content-center">Total ({{this.total_records}} items)</span>
+                    }
+                    <p-dropdown 
+                        [options]="sort_options" 
+                        [(ngModel)]="selectedOption"
+                        [checkmark]="true" 
+                        (onChange)="updateTempSelectOption($event)"
+                        optionLabel="label"
+                        class="hidden md:flex flex-grow-1 align-content-center justify-content-end"
+                        placeholder="Select order type" />
+                    <div class="flex md:hidden flex-grow-1 align-items-center align-content-center justify-content-end">
+                        <div (click)="isOrderSideBarVisible = true;" class="flex flex-row align-items-center align-content-center cursor-pointer">
+                            <span class="material-icons text-base">
+                                swap_vert
+                            </span>
+                            <span class="text-base text-color font-bold line-height-1">
+                                Sort
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                @for(item of auctions; track item.id){
+                    <app-auction [item]="item" class="w-full md:w-30rem"></app-auction>
+                }
+                <p-paginator 
+                    (onPageChange)="onPageChange($event)"
+                    [first]="first"
+                    [rows]="rows" 
+                    [showCurrentPageReport]="true"
+                    [totalRecords]="total_records"
+                    styleClass="surface-ground"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" />
+            }
+        } @else {
+            <div *ngFor="let step of steps_skeleton" class="w-full md:w-30rem px-2">
+                <div class="flex flex-column w-full">
+                    <p-skeleton styleClass="mb-1 w-9" />
+                    <p-skeleton styleClass="mb-1 w-5"/>
+                    <p-skeleton styleClass="w-full h-15rem md:h-30rem mb-1" />
+                    <p-skeleton styleClass="mb-1 w-7" />
+                    <p-skeleton styleClass="mb-1 w-7" />
+                    <p-skeleton styleClass="mb-1 w-full" />
+                    <p-skeleton styleClass="mb-1 w-full" />
+                </div>
+            </div>
+        }
+    </div>
+    <p-sidebar 
+        [(visible)]="isOrderSideBarVisible" 
+        position="bottom" 
+        class="md:hidden"
+        styleClass="h-70"
+    >
+        <ng-template pTemplate="header">
+            <span class="text-xl text-color font-bold">Choose sort type</span>
+        </ng-template>
+        <ng-template pTemplate="content">
+            <p-tree
+                id="sort_sm"
+                [value]="sort_options" 
+                [(selection)]="selectedOptionTemp"
+                selectionMode="single" 
+                class="w-full h-full block"
+                styleClass="w-full h-full overflow-y-auto p-0" />
+        </ng-template>
+        <ng-template pTemplate="footer">
+            <div class="flex justify-content-end">
+                <p-button label="Select" (onClick)="isOrderSideBarVisible = false;selectOrderFromMobileTree();">
+                    <ng-template pTemplate="icon">
+                        <span class="material-icons">
+                            check
+                        </span>
+                    </ng-template>
+                </p-button>
+            </div>
+        </ng-template>
+    </p-sidebar>
+    <p-scrollTop />
+</div>

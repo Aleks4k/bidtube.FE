@@ -1,0 +1,52 @@
+<p-panel (contextmenu)="onContextMenu($event)" styleClass="mb-2">
+    <ng-template pTemplate="header">
+        <div class="flex align-content-start gap-2">
+            <span class="font-bold">
+                {{notification.title}}
+            </span>
+            @if(this.notification.status === 1 || this.notification.status === 2){
+                <p-tag value="Unread" [rounded]="true" />
+            }
+        </div>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <div class="flex flex-wrap align-items-center justify-content-between">
+            @if(this.notification.action?.includes("msg(")){
+                <span (click)="this.openChat()" pRipple class="border-circle material-icons text-xl md:text-2xl text-color-secondary cursor-pointer">
+                    forum
+                </span>
+            }
+            <span class="p-text-secondary">
+                {{notification.date_of_notification | date:'medium'}}
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="icons">
+        <p-menu #menu [model]="items_All" [popup]="true" appendTo="body">
+            <ng-template pTemplate="item" let-mitem>
+                <a class="p-menuitem-link" pRipple>
+                    <span class="material-icons">{{ mitem.icon }}</span>
+                    <span class="ml-2">{{ mitem.label }}</span>
+                </a>
+            </ng-template>
+        </p-menu>
+        <div class="flex align-items-center justify-content-end flex-grow-1">
+            <span (click)="menu.toggle($event)" pRipple class="border-circle material-icons text-xl md:text-2xl text-color-secondary cursor-pointer">
+                more_vert
+            </span>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <p class="m-0 h-3rem-max-min overflow-y-auto">
+            {{notification.description}}
+        </p>
+    </ng-template>
+</p-panel>
+<p-contextMenu #cm [model]="items_All" appendTo="body">
+    <ng-template pTemplate="item" let-item>
+        <a class="p-menuitem-link" pRipple>
+            <span class="material-icons">{{ item.icon }}</span>
+            <span class="ml-2">{{ item.label }}</span>
+        </a>
+    </ng-template>
+</p-contextMenu>

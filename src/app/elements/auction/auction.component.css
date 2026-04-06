@@ -1,0 +1,36 @@
+::ng-deep .auction-item .p-panel-header{
+    border: 0px !important;
+    background-color: var(--surface-ground) !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
+::ng-deep .auction-item .p-panel-content{
+    border-left: 0px !important;
+    border-right: 0px !important;
+    border-radius: 0px !important;
+    background-color: var(--surface-ground) !important;
+}
+::ng-deep .cst-auction-bc .p-menuitem-text{
+    color: var(--text-color-secondary) !important;
+}
+::ng-deep .auction-item .p-panel-content {
+    padding: 0px !important;
+}
+::ng-deep li[data-list="ordered"] {
+    list-style-type: decimal; /* Ovo će zadržati numeraciju (quill text editor problem) */
+}
+::ng-deep li[data-list="bullet"] {
+    list-style-type: disc; /* Ovo će promeniti marker u tačku (quill text editor problem) */
+}
+::ng-deep .cst-anti-margin  * {
+    margin: 0px !important;
+}
+.cst-direction-horizontal-swipe {
+    touch-action: pan-y !important;
+}
+.wh-1_75rem{
+    width: 1.75rem;
+    height: 1.75rem;
+}

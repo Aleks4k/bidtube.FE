@@ -1,0 +1,228 @@
+<div class="flex flex-column min-h-screen">
+    <p-menubar class="cst-navbar sticky top-0" id="header">
+        <ng-template pTemplate="start">
+            <div class="min-h-84 surface-overlay md:shadow-2 flex relative md:static">
+                <!--Logo-->
+                <div pStyleClass=".cst-menubar" leaveToClass="hidden" [routerLink]="['/home']" class="cursor-pointer flex align-items-center justify-content-center px-2 sm:px-4 flex-column">
+                    <span class="material-icons text-3xl sm:text-5xl text-color">
+                        local_mall
+                    </span>
+                    <span class="font-bold text-color">bidtube</span>
+                </div>
+                <!--Search bar-->
+                <div class="min-w-0 flex flex-1 px-2 md:px-3" pStyleClass=".cst-menubar" leaveToClass="hidden">
+                    <span class="flex align-items-center">
+                        <span class="material-icons text-secondary-color">search</span>
+                    </span>
+                    <input type="text" placeholder="Search"
+                        class="surface-overlay appearance-none border-none flex-auto outline-none p-component text-secondary-color pl-2 sm:pl-3">
+                </div>
+                <!--Menu button na malim ekranima-->
+                <div class="pr-1 sm:pr-3 flex align-items-center justify-content-center md:hidden">
+                    <span class="border-circle cursor-pointer material-icons text-4xl text-color" pRipple pStyleClass=".cst-menubar" enterFromClass="hidden" leaveToClass="hidden">
+                        menu
+                    </span>
+                </div>
+                <!--Menu-->
+                <div
+                    class="cst-menubar md:flex absolute md:static left-0 top-100 z-1 shadow-2 md:shadow-none md:pl-4 w-full md:w-auto hidden">
+                    <ul
+                        pStyleClass=".cst-menubar" leaveToClass="hidden"
+                        class="list-none p-0 m-0 flex select-none flex-column surface-overlay md:flex-row">
+                        @if(_auth.getAccessToken()){
+                            <!--Add auction - Vidi se na svim uređajima-->
+                            <li>
+                                <a (click)="openPostAuction()" pRipple class="flex p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                    <span class="material-icons text-3xl">
+                                        add_circle
+                                    </span>
+                                    <div class="block md:hidden">
+                                        <div class="text-color font-medium">Add Auction</div>
+                                    </div>
+                                </a>
+                            </li>
+                            <!--My auction - Vidi se na malim ekranima-->
+                            <li>
+                                <a pRipple class="md:hidden flex p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                    <span class="material-icons text-3xl">
+                                        folder_open
+                                    </span>
+                                    <div class="block md:hidden">
+                                        <div class="text-color font-medium">My Auctions</div>
+                                    </div>
+                                </a>
+                            </li>
+                            <!--Inbox - Vidi se na svim uređajima-->
+                            <li>
+                                <a pRipple class="flex p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                    <span class="material-icons text-3xl">
+                                        inbox
+                                    </span>
+                                    <div class="block md:hidden">
+                                        <div class="text-color font-medium">Inbox</div>
+                                    </div>
+                                </a>
+                            </li>
+                            <!--Notifications-->
+                            <li>
+                                <!--Za velike uređaje-->
+                                <a #notificationIcon (click)="toggleNotifications($event)" pRipple class="hidden md:flex p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                    @if(this.unreadNotifications > 0){
+                                        <span class="material-icons text-3xl cst-badge" pBadge value={{this.unreadNotifications}} severity="danger">notifications</span>
+                                    } @else {
+                                        <span class="material-icons text-3xl">notifications</span>
+                                    }
+                                </a>
+                                <p-overlayPanel
+                                    (onShow)="onNotificationOverlayShow()" 
+                                    (onHide)="onNotificationHide()"  
+                                    #opn
+                                    appendTo="body"
+                                    [dismissable]="true"
+                                    styleClass="cst-notifications-overlaypanel md:w-6 lg:w-5 h-30rem">
+                                    <ng-template pTemplate="content">
+                                        @if(!this.notificationsContainerLoaded){
+                                            <div class="flex-auto h-full">
+                                                <div class="overlay">
+                                                    <p-progressSpinner ariaLabel="loading" />
+                                                </div>
+                                            </div>
+                                        }
+                                        <ng-template #notificationsContainer></ng-template>
+                                    </ng-template>
+                                </p-overlayPanel>
+                                <div class="hidden">
+                                    <ng-template #tempNotificationsContainer></ng-template>
+                                </div>
+                                <!--Za male uređaje-->
+                                <a (click)="navigateToNotifications()" pRipple class="flex md:hidden p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                    @if(this.unreadNotifications > 0){
+                                        <span class="material-icons text-3xl cst-badge" pBadge value={{this.unreadNotifications}} severity="danger">notifications</span>
+                                    } @else {
+                                        <span class="material-icons text-3xl">notifications</span>
+                                    }
+                                    <div class="text-color font-medium">Notifications</div>
+                                </a>
+                            </li>
+                        }
+                        <!--Dark mode button - Za telefone i velike ekrane kada je korisnik odlogovan-->
+                        <li>
+                            <a [ngClass]="{'md:hidden': _auth.getAccessToken()}" ngDefaultControl [(ngModel)]="theme" pRipple (click)="changeTheme()" class="flex p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                <span class="material-icons text-3xl">
+                                    {{ theme === 'light' ? 'dark_mode' : 'light_mode' }}
+                                </span>
+                                <div class="block md:hidden">
+                                    <div class="text-color font-medium">Toggle {{theme === 'light' ? 'dark': 'light'}} mode</div>
+                                </div>
+                            </a>
+                        </li>
+                        @if(_auth.getAccessToken()){
+                            <!--Edit profile na malom ekranu-->
+                            <li class="md:hidden">
+                                <a (click)="openEditProfile()" pRipple class="flex p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                    <span class="material-icons text-3xl">
+                                        person
+                                    </span>
+                                    <div class="block">
+                                        <div class="text-color font-medium">{{ _auth.getUsername() }}</div>
+                                        <span class="text-600 font-medium text-sm">Tap to open profile</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <!--Logout na malom ekranu-->
+                            <li class="md:hidden">
+                                <a (click)="logout()" pRipple class="flex p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                    <span class="material-icons text-3xl">
+                                        logout
+                                    </span>
+                                    <div class="block">
+                                        <div class="text-color font-medium">Logout</div>
+                                    </div>
+                                </a>
+                            </li>
+                            <!--User menu na velikim ekranima-->
+                            <li class="hidden md:block">
+                                <a (click)="menu_person.toggle($event)" pRipple class="flex p-3 h-full md:py-2 align-items-center text-600 border-left-2 md:border-bottom-2 md:border-left-none border-transparent hover:border-blue-500 font-medium cursor-pointer transition-colors transition-duration-150 gap-2">
+                                    <span class="material-icons text-3xl">
+                                        person
+                                    </span>
+                                </a>
+                                <p-menu #menu_person [model]="menu_person_items" [popup]="true" styleClass="top-84">
+                                    <ng-template pTemplate="submenuheader">
+                                        {{ this._auth.getUsername() }}
+                                    </ng-template>
+                                    <ng-template pTemplate="item" let-item>
+                                        <a class="p-menuitem-link" pRipple>
+                                            @if(item.badge && item.badge !== "0"){
+                                                <span class="material-icons cst-badge" pBadge value={{item.badge}} severity="danger">{{item.icon}}</span>
+                                            } @else {
+                                                <span class="material-icons">{{ item.icon }}</span>
+                                            }
+                                            <span class="ml-2">{{ item.label }}</span>
+                                        </a>
+                                    </ng-template>
+                                    <ng-template pTemplate="end">
+                                        <div class="flex align-items-center justify-content-start p-3">
+                                            <span class="material-icons text-3xl text-color">
+                                                local_mall
+                                            </span>
+                                            <span class="font-bold text-color ml-2">bidtube</span>
+                                        </div>
+                                    </ng-template>
+                                </p-menu>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <!--Dock za male ekrane ono na dnu-->
+                @if(_auth.getAccessToken()){
+                    <div class="md:hidden" pStyleClass=".cst-menubar" leaveToClass="hidden">
+                        <p-dock [model]="items" position="bottom" styleClass="fixed cst-dock">
+                            <ng-template pTemplate="item" let-item>
+                                <div class="flex flex-column align-items-center justify-content-center text-center">
+                                    @if(item.badge && item.badge !== "0"){
+                                        <span class="material-icons cst-badge" pBadge value={{item.badge}} severity="danger">{{item.icon}}</span>
+                                    } @else {
+                                        <span class="material-icons">{{item.icon}}</span>
+                                    }
+                                    <span class="text-xs text-color">{{item.label}}</span>
+                                </div>
+                            </ng-template>
+                        </p-dock>
+                    </div>
+                }
+            </div>
+        </ng-template>
+    </p-menubar>
+    <!--Router outlet holder - pStyleClass je da se na MINI ekranima zatvara menu kada se klikne bilo gde u okviru ovog elementa.-->
+    <div pStyleClass=".cst-menubar" leaveToClass="hidden" class="flex-auto flex">
+        @if(this.loadingRouteConfig){
+            <!--Loader koji se prikazuje samo između RouteConfigLoadStart i RouteConfigLoadEnd-->
+            <div class="flex-auto">
+                <div class="overlay">
+                    <p-progressSpinner ariaLabel="loading" />
+                </div>
+            </div>
+        } @else {
+            <router-outlet></router-outlet>
+        }
+    </div>
+    <!--Footer holder - pStyleClass je da se na MINI ekranima zatvara menu kada se klikne bilo gde u okviru ovog elementa.-->
+    <div [ngClass]="{'mb-7 md:mb-0': _auth.getAccessToken()}" class="surface-overlay shadow-2" pStyleClass=".cst-menubar" leaveToClass="hidden" id="footer">
+        <div class="py-4 flex flex-column sm:flex-row sm:align-items-center justify-content-between">
+            <div [routerLink]="['/home']" class="cursor-pointer flex justify-content-center px-5 flex-column">
+                <span class="material-icons text-5xl text-color">
+                    local_mall
+                </span>
+                <span class="font-bold text-color">bidtube</span>
+                <small class="mt-2 line-height-3">© {{ year }} Bidtube, All rights reserved</small>
+            </div>
+            <div class="mt-3 sm:mt-0 px-5">
+                <a href="https://github.com/aleks4k" target="_blank" class="cursor-pointer text-500 transition-colors transition-duration-150 hover:text-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="fill-900" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<p-toast styleClass="w-17rem sm:w-25rem"/>

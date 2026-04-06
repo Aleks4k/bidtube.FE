@@ -1,0 +1,187 @@
+<p-panel class="w-full" styleClass="auction-item w-full">
+    <ng-template pTemplate="header">
+        <div class="flex flex-column w-full">
+            <div class="flex gap-1 w-full">
+                <span class="text-xs md:text-sm text-color font-bold">{{item.username}}</span>
+                <span class="text-xs md:text-sm text-color-secondary">•</span>
+                <span class="text-xs md:text-sm text-color-secondary">{{item.date_of_auction | date:'medium'}}</span>
+                <p-menu #menu_auctions [model]="menu_auction_items" [popup]="true">
+                    <ng-template pTemplate="item" let-mitem>
+                        <a class="p-menuitem-link" pRipple (click)="openBid()">
+                            <svg width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <path class="fill-900" d="m5.391,9.109c-.391-.391-.391-1.023,0-1.414L12.793.293c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-7.402,7.402c-.195.195-.451.293-.707.293s-.512-.098-.707-.293Zm8.496,8.495c.195.195.451.293.707.293s.512-.098.707-.293l7.402-7.401c.391-.391.391-1.023,0-1.414-.391-.391-1.023-.391-1.414,0l-7.402,7.401c-.391.391-.391,1.023,0,1.414Zm-.522-3.555l5.871-5.871-4.414-4.414-5.871,5.871,1.5,1.5L.293,21.293c-.391.391-.391,1.023,0,1.414.195.195.451.293.707.293s.512-.098.707-.293l10.158-10.158,1.5,1.5Zm9.635,7.951h-.051c-.232-1.14-1.242-2-2.449-2h-8c-1.208,0-2.217.86-2.449,2h-.051c-.553,0-1,.447-1,1s.447,1,1,1h13c.553,0,1-.447,1-1s-.447-1-1-1Z"/>
+                            </svg>
+                            <span class="ml-2">{{ mitem.label }}</span>
+                        </a>
+                    </ng-template>
+                </p-menu>
+                <div class="flex align-items-center justify-content-end flex-grow-1">
+                    <span (click)="menu_auctions.toggle($event)" pRipple class="border-circle material-icons text-xl md:text-2xl text-color-secondary cursor-pointer">
+                        more_vert
+                    </span>
+                </div>
+            </div>
+            <p-breadcrumb 
+                class="max-w-full"
+                styleClass="cst-auction-bc border-0 border-noround surface-ground p-0 text-xs md:text-sm overflow-hidden"
+                [model]="item.breadcrumb_items" />
+        </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <ng-template #galleryContainer></ng-template>
+        @if(!galleriaLoaded){
+            <p-skeleton styleClass="w-full h-15rem md:h-30rem mb-1" />
+        }
+        <div class="w-full flex p-2 pt-0 pb-1 align-items-center gap-1">
+            <div class="flex align-items-center">
+                <span pRipple class="wh-1_75rem border-circle text-color cursor-pointer" (click)="openBid()">
+                    <svg width="1.75rem" height="1.75rem" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+                        <path class="fill-900" d="m5.391,9.109c-.391-.391-.391-1.023,0-1.414L12.793.293c.391-.391,1.023-.391,1.414,0s.391,1.023,0,1.414l-7.402,7.402c-.195.195-.451.293-.707.293s-.512-.098-.707-.293Zm8.496,8.495c.195.195.451.293.707.293s.512-.098.707-.293l7.402-7.401c.391-.391.391-1.023,0-1.414-.391-.391-1.023-.391-1.414,0l-7.402,7.401c-.391.391-.391,1.023,0,1.414Zm-.522-3.555l5.871-5.871-4.414-4.414-5.871,5.871,1.5,1.5L.293,21.293c-.391.391-.391,1.023,0,1.414.195.195.451.293.707.293s.512-.098.707-.293l10.158-10.158,1.5,1.5Zm9.635,7.951h-.051c-.232-1.14-1.242-2-2.449-2h-8c-1.208,0-2.217.86-2.449,2h-.051c-.553,0-1,.447-1,1s.447,1,1,1h13c.553,0,1-.447,1-1s-.447-1-1-1Z"/>
+                    </svg>                           
+                </span>
+                @if(item.top_bid){
+                    <span class="text-xs md:text-sm text-color font-bold">
+                        {{ item.top_bid.amount | number : '1.0-3' }} €
+                    </span>
+                } @else {
+                    <span [ngClass]="{'hidden': item.top_bid}" class="animation-duration-1000 text-xs md:text-sm text-color font-bold">
+                        {{ item.startPrice | number : '1.0-3' }} €
+                    </span>
+                }
+            </div>
+            <div class="flex align-items-center">
+                <span pRipple class="material-icons text-3xl text-color cursor-pointer">
+                    reviews
+                </span>
+                @if(item.total_reviews === 0){
+                    <span class="text-xs md:text-sm text-color">
+                        No reviews
+                    </span>
+                } @else {
+                    <span class="text-xs md:text-sm text-color">
+                        {{ item.average_rating | number : '1.1-2' }} ({{ item.total_reviews }})
+                    </span>
+                }
+            </div>
+            @if(item.secondsLeft < 86400){
+                <div class="flex align-items-center flex-grow-1 justify-content-end">
+                    <span pRipple class="border-circle material-icons text-3xl text-color cursor-pointer">
+                        timer
+                    </span>
+                    <span class="text-xs md:text-sm text-color font-bold">
+                        <countdown 
+                            (event)="handleCountdown($event)"
+                            [config]="{ leftTime: item.secondsLeft }" />
+                    </span>
+                </div>
+            }
+        </div>
+        <div class="w-full flex p-2 pt-0 pb-1 align-items-center gap-1">
+            @if(item.top_bid){
+                @if(item.auctionEnded){
+                    <span class="text-xs md:text-sm text-color">
+                        The auction has ended, with a winning bid of <span class="font-bold">{{ item.top_bid.amount | number : '1.0-3' }} €</span>
+                    </span>
+                } @else {
+                    <span class="text-xs md:text-sm text-color">
+                        The current top bid is <span class="font-bold">{{ item.top_bid.amount | number : '1.0-3' }} €</span>
+                    </span>
+                }
+            } @else {
+                @if(item.auctionEnded){
+                    <span class="text-xs md:text-sm text-color">
+                        The auction ended without a winner.
+                    </span>
+                } @else {
+                    <span class="text-xs md:text-sm text-color">
+                        There are currently no bids on this auction.
+                    </span>
+                }
+            }
+        </div>
+        <div class="w-full p-2 pt-0">
+            <span class="text-xs md:text-sm text-color font-bold">{{item.title}}</span>
+            <span class="cst-anti-margin text-xs md:text-sm text-color" [innerHTML]="item.sanitized_desc"></span>
+            <div class="w-full flex mt-1">
+                <span class="text-xs md:text-sm text-color-secondary cursor-pointer" (click)="openBid()">Place your bid</span>
+                @if(item.auctionEnded){
+                    <span class="text-xs md:text-sm text-color-secondary flex-grow-1 text-right">Auction ended</span>
+                } @else {
+                    <span class="text-xs md:text-sm text-color-secondary flex-grow-1 text-right">Ends on: {{item.date_of_expiration | date:'mediumDate'}}</span>
+                }
+            </div>
+        </div>
+    </ng-template>
+</p-panel>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <p-dialog header="Make bid" [modal]="true" [(visible)]="dialog_visible" styleClass="w-full md:w-30rem">
+        <ng-template pTemplate="content">
+            <span class="block text-md md:text-xl text-color font-bold">{{item.title}}</span>
+            <div class="w-full mt-1">
+                <label class="text-base text-color " for="currency">Your offer</label>
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <span class="material-icons">euro</span>
+                    </p-inputGroupAddon>
+                <p-inputNumber 
+                    mode="currency"
+                    inputId="currency"
+                    currency="EUR"
+                    class="w-full" 
+                    styleClass="w-full"
+                    showButtons="true"
+                    placeholder="Your offer"
+                    step="10"
+                    formControlName="offer_amount"
+                    [ngClass]="{'ng-invalid ng-dirty': offer_amount?.invalid && (offer_amount?.dirty || offer_amount?.touched)}"
+                    locale="de-DE" /> 
+                </p-inputGroup>
+                @if(offer_amount?.invalid && (offer_amount?.dirty || offer_amount?.touched)){
+                    @if(offer_amount?.errors?.['required']){
+                        <small class="p-error block">Bid amount is required.</small>
+                    }
+                    @if(offer_amount?.errors?.['min']){
+                        <small class="p-error block">The minimum amount you need to offer to participate is {{this.min_bid| number : '1.0-3'}} €.</small>
+                    }
+                    @if(offer_amount?.errors?.['max']){
+                        <small class="p-error block">Bid amount cannot exceed 1,000,000,000€.</small>
+                    }
+                }
+            </div>
+            @if(item.top_bid){
+                @if(item.auctionEnded){
+                    <span class="block text-xs md:text-sm text-color">
+                        The auction has ended, with a winning bid of <span class="font-bold">{{ item.top_bid.amount | number : '1.0-3' }} €</span>
+                    </span>
+                } @else {
+                    <span class="block text-xs md:text-sm text-color">
+                        The current top bid is <span class="font-bold">{{ item.top_bid.amount | number : '1.0-3' }} €</span>
+                    </span>
+                }
+            } @else {
+                @if(item.auctionEnded){
+                    <span class="block text-xs md:text-sm text-color-secondary">
+                        The auction ended without a winner.
+                    </span>
+                } @else {
+                    <span class="block text-xs md:text-sm text-color-secondary">
+                        There are currently no bids on this auction.
+                    </span>
+                }
+            }
+        </ng-template>
+        <ng-template pTemplate="footer">
+            @if(this.addAjax){
+                <p-progressBar mode="indeterminate"></p-progressBar>
+            } @else {
+                <div class="flex justify-content-end gap-2">
+                    <p-button label="Cancel" severity="secondary" (onClick)="dialog_visible = false" />
+                    <button type="submit" [disabled]="!form.valid || item.auctionEnded" pButton class="w-auto">
+                        <span class="p-button-icon p-button-icon-left material-icons" aria-hidden="true">local_mall</span>
+                        <span class="p-button-label">Make offer</span>
+                    </button>
+                </div>
+            }
+        </ng-template>
+    </p-dialog>
+</form>

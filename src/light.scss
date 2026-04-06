@@ -1,0 +1,14 @@
+@import "primeng/resources/themes/bootstrap4-light-blue/theme.css";
+
+@layer reset, primeng;
+@layer reset {
+    .cst-dock .p-dock-list-container {
+        border-color: rgba(0, 0, 0, 0.2) !important;
+    }
+    .p-galleria-indicators .p-galleria-indicator button {
+        background-color: var(--surface-section);
+    }
+    .p-galleria-indicators .p-highlight button {
+        background-color: var(--primary-color) !important;
+    }
+}

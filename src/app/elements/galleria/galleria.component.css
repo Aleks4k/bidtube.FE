@@ -1,0 +1,19 @@
+::ng-deep .auction-gallery .p-galleria-item-nav {
+    transform: translateY(-50%) !important;
+}
+::ng-deep .auction-gallery .p-galleria-indicators {
+    padding: 0px !important;
+    display: flex;
+    gap: 8px !important;
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+}
+::ng-deep .auction-gallery .p-galleria-indicator button {
+    border-radius: 50% !important;
+    width: 0.4rem !important;
+    height: 0.4rem !important;
+}
+::ng-deep .auction-gallery .p-galleria-indicator {
+    display: flex !important;
+    margin-right: 0px !important;
+}

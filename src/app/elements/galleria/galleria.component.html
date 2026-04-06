@@ -1,0 +1,36 @@
+<p-galleria 
+    [value]="item.images" 
+    [showItemNavigators]="true" 
+    [showIndicators]="true" 
+    [showThumbnails]="false"
+    class="auction-gallery"
+    [(activeIndex)]="item.activeIndex">
+    <ng-template pTemplate="itemnexticon">
+        @if(item.images.length > 1){
+        <span class="material-icons text-3xl">
+            arrow_forward_ios
+        </span>
+        }
+    </ng-template>
+    <ng-template pTemplate="itempreviousicon">
+        @if(item.images.length > 1){
+        <span class="material-icons text-3xl">
+            arrow_back_ios_new
+        </span>
+        }
+    </ng-template>
+    <ng-template pTemplate="item" let-image>
+        @if(!item.imageLoaded){
+            <p-skeleton styleClass="w-full h-15rem md:h-30rem mb-1" />
+        }
+        <img 
+            [src]="image.url" 
+            [alt]="image.alt_text" 
+            [ngClass]="{'hidden': !item.imageLoaded}"
+            class="cst-direction-horizontal-swipe w-full border-1 surface-border border-noround md:border-round"
+            (swipeleft)="next()" 
+            (swiperight)="prev()" 
+            (doubletap)="onOpenBid()"
+            (load)="onImageLoad()" />
+    </ng-template>
+</p-galleria>

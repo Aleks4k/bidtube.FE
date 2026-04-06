@@ -1,0 +1,21 @@
+@media (max-width: 380px) {
+    ::ng-deep .cst-fileUpload .p-fileupload-row > div {
+        padding: 0.5rem !important;
+    }
+}
+@media (max-width: 450px) {
+    ::ng-deep .cst-fileUpload .p-fileupload-content {
+        padding: 0 !important;
+    }
+}
+::ng-deep .cst-texteditor .p-editor-toolbar,
+::ng-deep .cst-texteditor .p-editor-content { 
+    border: none !important;
+}
+
+::ng-deep image-cropper img { /*Postojao je problem gde je cropper na nekim slikama vraćao 499*499 i nije mi jasno zašto ovo je neki workaround...*/
+    padding: 1px;
+}
+::ng-deep .cst-texteditor .ql-editor * { /*Kada je reč u quill-u predugačka on poludi i krene da proširuje ekran*/
+    word-break: break-word !important;
+}

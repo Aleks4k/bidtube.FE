@@ -1,0 +1,122 @@
+<input id="credential" class="hidden" type="text" pInputText [formControl]="credentialControl" (change)="onLoginGoogle()"/>
+<p-card class="w-full align-items-center flex justify-content-center md:px-8 sm:px-6 px-4 py-8" styleClass="p-4 shadow-2 border-round w-full md:w-9">
+    <ng-template pTemplate="header">
+        <div class="text-center mb-3">
+            <span class="material-icons text-5xl text-color">local_mall</span>
+            <div class="text-color text-3xl font-medium mb-2">Login</div>
+        </div>
+    </ng-template>
+    <ng-template pTemplate="content">
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-column gap-4">
+            <div>
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <span class="material-icons">mail</span>
+                    </p-inputGroupAddon>
+                    <p-floatLabel class="w-full h-full cst-float">
+                        <input 
+                            id="mail" 
+                            type="text" 
+                            placeholder="Email" 
+                            pInputText 
+                            class="w-full border-noround-left" 
+                            [ngClass]="{'ng-invalid ng-dirty': mail?.invalid && (mail?.dirty || mail?.touched)}"
+                            formControlName="mail"/>
+                        <label for="mail">Email *</label>
+                    </p-floatLabel>
+                </p-inputGroup>
+                @if(mail?.invalid && (mail?.dirty || mail?.touched)){
+                    @if(mail?.errors?.['required']){
+                        <small class="p-error block">Email is required.</small>
+                    }
+                    @if(mail?.errors?.['email']){
+                        <small class="p-error block">Invalid email address.</small>
+                    }
+                }
+            </div>
+            <div>
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <span class="material-icons">lock</span>
+                    </p-inputGroupAddon>
+                    <p-floatLabel class="w-full h-full cst-float">
+                        <input 
+                            id="password" 
+                            type="password" 
+                            placeholder="Password" 
+                            pInputText 
+                            class="w-full border-noround-left" 
+                            [ngClass]="{'ng-invalid ng-dirty': password?.invalid && (password?.dirty || password?.touched)}"
+                            formControlName="password"/>
+                        <label for="password">Password *</label>
+                    </p-floatLabel>
+                </p-inputGroup>
+                @if(password?.invalid && (password?.dirty || password?.touched)){
+                    @if(password?.errors?.['required']){
+                        <small class="p-error block">Password is required.</small>
+                    }
+                    @if(password?.errors?.['minlength']){
+                        <small class="p-error block">Password must be at least 8 characters.</small>
+                    }
+                    @if(password?.errors?.['uppercase']){
+                        <small class="p-error block">Password must contain at least one uppercase letter.</small>
+                    }
+                    @if(password?.errors?.['lowercase']){
+                        <small class="p-error block">Password must contain at least one lowercase letter.</small>
+                    }
+                    @if(password?.errors?.['number']){
+                        <small class="p-error block">Password must contain at least one number.</small>
+                    }
+                    @if(password?.errors?.['special']){
+                        <small class="p-error block">Password must contain at least one special character.</small>
+                    }
+                }
+            </div>
+            <div>
+                <p-checkbox 
+                    formControlName="remember_me" 
+                    [binary]="true"
+                    label="Remember me"
+                    inputId="binary"/>
+            </div>
+            @if(this.loginAJAX){
+                <p-progressBar mode="indeterminate"></p-progressBar>
+            } @else {
+                <button type="submit" [disabled]="!loginForm.valid" pButton pRipple class="w-full">
+                    <span class="p-button-icon p-button-icon-left material-icons" aria-hidden="true">person</span>
+                    <span class="p-button-label">Login</span>
+                </button>
+            }
+        </form>
+    </ng-template>
+    <ng-template pTemplate="footer">
+        <p-divider align="center">
+            OR
+        </p-divider>
+        <div id="g_id_onload"
+            data-client_id="856691224569-tlp44dthegmves2b5r05m7elss6g8ubt.apps.googleusercontent.com"
+            data-callback="validateToken"
+            data-auto_prompt="false">
+        </div>
+        <div id="google-signin-button" class="hidden sm:flex g_id_signin justify-content-center"
+            data-type="standard"
+            data-size="large"
+            data-width=350
+            data-theme="filled_blue"
+            data-text="continue_with"
+            data-shape="rectangular"
+            data-logo_alignment="left">
+        </div>
+        <div id="google-signin-button-sm" class="flex sm:hidden g_id_signin justify-content-center"
+            data-type="icon"
+            data-theme="filled_blue"
+            data-text="continue_with"
+            data-shape="rectangular"
+            data-logo_alignment="left">
+        </div>
+        <div class="mt-3 text-center">
+            <span class="text-600 font-medium line-height-3">Don't have an account?</span>
+            <a [routerLink]="['/register']" class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
+        </div>
+    </ng-template>
+</p-card>

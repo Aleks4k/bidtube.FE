@@ -1,0 +1,9 @@
+.word-break {
+    word-wrap: break-word;
+}
+::ng-deep .h-70{
+    height: 70% !important;
+}
+::ng-deep app-auction:last-of-type .p-panel-content{
+    border: 0 !important;
+}

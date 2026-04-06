@@ -1,0 +1,288 @@
+<link id="quill-loader" rel="stylesheet">
+<div class="surface-ground px-4 py-6 md:px-7">
+    <div class="text-color font-medium text-xl mb-3">Create Auction</div>
+    <div class="surface-card p-4 shadow-2 border-round">
+        <form [formGroup]="addForm" (ngSubmit)="onSubmit()" class="grid">
+            <div class="col-12 field mb-0">
+                <label class="text-xl text-color font-bold" for="title">Title</label>
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <span class="material-icons">title</span>
+                    </p-inputGroupAddon>
+                    <input 
+                            id="title" 
+                            type="text" 
+                            placeholder="Title" 
+                            pInputText 
+                            class="w-full border-noround-left" 
+                            [ngClass]="{'ng-invalid ng-dirty': title?.invalid && (title?.dirty || title?.touched)}"
+                            formControlName="title"/>
+                </p-inputGroup>
+                @if(title?.invalid && (title?.dirty || title?.touched)){
+                    @if(title?.errors?.['required']){
+                        <small class="p-error block">Title is required.</small>
+                    }
+                    @if(title?.errors?.['minlength']){
+                        <small class="p-error block">Title must be at least 8 characters.</small>
+                    }
+                    @if(title?.errors?.['maxlength']){
+                        <small class="p-error block">Title can be up to 64 characters long.</small>
+                    }
+                }
+            </div>
+            <p-divider class="w-full"></p-divider>
+            <div class="col-12 field mb-0">
+                <label class="text-xl text-color font-bold" for="category">Choose category</label>
+                <p-treeSelect
+                    id="category"
+                    [options]="categories" 
+                    selectionMode="single" 
+                    class="block"
+                    containerStyleClass="w-full"
+                    [ngClass]="{'ng-invalid ng-dirty': selectedCategory?.invalid && (selectedCategory?.dirty || selectedCategory?.touched)}"
+                    placeholder="Select category"
+                    formControlName="selectedCategory" />
+                @if(selectedCategory?.invalid && (selectedCategory?.dirty || selectedCategory?.touched)){
+                    @if(selectedCategory?.errors?.['required']){
+                        <small class="p-error block">Category is required.</small>
+                    }
+                }
+            </div>
+            <p-divider class="w-full"></p-divider>
+            <div class="col-12 field mb-0">
+                <label class="text-xl text-color font-bold" for="description">Description</label>
+                @if(this._quill.quillLoaded){
+                    <p-editor
+                        [style]="{ height: '16rem' }"
+                        formControlName="description"
+                        styleClass="cst-texteditor border-1 border-solid border-300 border-round-sm"
+                        (onTextChange)="validateText($event)"
+                    >
+                        <ng-template pTemplate="header">
+                            <span class="ql-formats">
+                                <button type="button" class="ql-bold" aria-label="Bold"></button>
+                                <button type="button" class="ql-italic" aria-label="Italic"></button>
+                                <button type="button" class="ql-underline" aria-label="Underline"></button>
+                            </span>
+                            <span class="ql-formats">
+                                <button type="button" value="ordered" class="ql-list" aria-label="Ordered List"></button>
+                                <button type="button" value="bullet" class="ql-list" aria-label="Unordered List"></button>
+                            </span>
+                        </ng-template>
+                    </p-editor>
+                    @if(description?.invalid && (description?.dirty || description?.touched)){
+                        @if(description?.errors?.['required']){
+                            <small class="p-error block">Description is required.</small>
+                        }
+                        @if(description?.errors?.['minlength']){
+                            <small class="p-error block">Description must be at least 24 characters.</small>
+                        }
+                        @if(description?.errors?.['maxlength']){
+                            <small class="p-error block">Description can be up to 1024 characters long.</small>
+                        }
+                    }
+                } @else {
+                    <p-skeleton styleClass="h-16rem" />
+                }
+            </div>
+            <p-divider class="w-full"></p-divider>
+            <div class="col-12 field mb-0">
+                <label class="text-xl text-color font-bold" for="currency">Staring price</label>
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <span class="material-icons">euro</span>
+                    </p-inputGroupAddon>
+                <p-inputNumber 
+                    mode="currency"
+                    inputId="currency"
+                    currency="EUR"
+                    class="w-full" 
+                    styleClass="w-full"
+                    showButtons="true"
+                    placeholder="Enter starting price for your auction"
+                    step="0.50"
+                    [ngClass]="{'ng-invalid ng-dirty': starting_price?.invalid && (starting_price?.dirty || starting_price?.touched)}"
+                    formControlName="starting_price"
+                    locale="de-DE" /> 
+                </p-inputGroup>
+                @if(starting_price?.invalid && (starting_price?.dirty || starting_price?.touched)){
+                    @if(starting_price?.errors?.['required']){
+                        <small class="p-error block">Starting price is required.</small>
+                    }
+                    @if(starting_price?.errors?.['min']){
+                        <small class="p-error block">Starting price needs to be at least 0,50€.</small>
+                    }
+                    @if(starting_price?.errors?.['max']){
+                        <small class="p-error block">Starting price cannot exceed 1,000,000,000€.</small>
+                    }
+                }
+            </div>
+            <p-divider class="w-full"></p-divider>
+            <div class="col-12 field mb-0">
+                <label class="text-xl text-color font-bold" for="date_of_exp">Date of expiration</label>
+                <p-inputGroup>
+                    <p-inputGroupAddon>
+                        <span class="material-icons">calendar_month</span>
+                    </p-inputGroupAddon>
+                    <p-calendar
+                        id="date_of_exp" 
+                        placeholder="Date of expiration" 
+                        class="w-full border-noround-left" 
+                        dateFormat="dd.mm.yy"
+                        [minDate]="minStartDate"
+                        [maxDate]="maxStartDate"
+                        (onShow)="this.updateMinMaxDate()"
+                        [showTime]="true"
+                        formControlName="date_of_exp"
+                        [ngClass]="{'ng-invalid ng-dirty': date_of_exp?.invalid && (date_of_exp?.dirty || date_of_exp?.touched)}"
+                        styleClass="w-full h-full border-noround-left cst-calendar-input"/>
+                </p-inputGroup>
+                @if(date_of_exp?.invalid && (date_of_exp?.dirty || date_of_exp?.touched)){
+                    @if(date_of_exp?.errors?.['required']){
+                        <small class="p-error block">Date of expiration is required.</small>
+                    }
+                    @if(date_of_exp?.errors?.['tosmall']){
+                        <small class="p-error block">The auction must last at least one day.</small>
+                    }
+                    @if(date_of_exp?.errors?.['tobig']){
+                        <small class="p-error block">The auction cannot last longer than one year.</small>
+                    }
+                }
+            </div>
+            <p-divider class="w-full"></p-divider>
+            <!--Dijalog - Nije vidljiv po default-u-->
+            <p-dialog header="Edit photo" [draggable]="false" [modal]="true" [(visible)]="dialogVisible">
+                <ng-template pTemplate="content">
+                    <form [formGroup]="addPhotoForm" class="w-17rem sm:w-30rem">
+                        <div class="col-12 field p-0 mb-2">
+                            <label class="text-color" for="img_name">Image name</label>
+                            <p-inputGroup>
+                                <p-inputGroupAddon>
+                                    <span class="material-icons">title</span>
+                                </p-inputGroupAddon>
+                                <input 
+                                    id="img_name" 
+                                    type="text" 
+                                    placeholder="Image name" 
+                                    pInputText 
+                                    [ngClass]="{'ng-invalid ng-dirty': alt_text?.invalid && (alt_text?.dirty || alt_text?.touched)}"
+                                    class="w-full border-noround-left" 
+                                    formControlName="alt_text"/>
+                            </p-inputGroup>
+                            @if(alt_text?.invalid && (alt_text?.dirty || alt_text?.touched)){
+                                @if(alt_text?.errors?.['required']){
+                                    <small class="p-error block">Name of photo is required.</small>
+                                }
+                                @if(alt_text?.errors?.['maxlength']){
+                                    <small class="p-error block">Name of photo can be up to 96 characters long.</small>
+                                }
+                            }
+                        </div>
+                        <image-cropper
+                            #imageCropper
+                            [imageURL]="imageUrl"
+                            [maintainAspectRatio]="true"
+                            [aspectRatio]="1 / 1"
+                            format="jpeg"
+                            (imageCropped)="imageCropped($event)"
+                            (loadImageFailed)="loadImageFailed()"
+                            [resizeToWidth]="500"
+                            [resizeToHeight]="500"
+                            [cropperMinWidth]="250"
+                            [cropperMinHeight]="250"
+                            [allowMoveImage]="true"
+                            [(transform)]="transform"
+                            class="w-full max-h-15rem sm:max-h-28rem p-0 mt-2"
+                        ></image-cropper>
+                        <div class="flex justify-content-evenly mt-2 w-full align-content-center">
+                            <span class="material-icons">remove</span>
+                            <p-slider 
+                                [animate]="true"
+                                [min]="0.05"
+                                [max]="2"
+                                [step]="0.05"
+                                (onChange)="updateImageZoom($event)"
+                                formControlName="zoom_value"
+                                styleClass="w-12rem md:w-25rem"
+                                class="align-content-center"
+                            />
+                            <span class="material-icons">add</span>
+                        </div>
+                        <div class="flex justify-content-center gap-2 mt-2 w-full align-content-center">
+                            <p-button (onClick)="updateRotation(-90.0)">
+                                <ng-template pTemplate="icon">
+                                    <span class="material-icons">rotate_90_degrees_ccw</span>
+                                </ng-template>
+                            </p-button>
+                            <p-button (onClick)="updateRotation(90.0)">
+                                <ng-template pTemplate="icon">
+                                    <span class="material-icons">rotate_90_degrees_cw</span>
+                                </ng-template>
+                            </p-button>
+                        </div>
+                    </form>
+                </ng-template>
+                <ng-template pTemplate="footer">
+                    <p-button 
+                        label="Cancel" 
+                        severity="secondary" 
+                        (onClick)="dialogVisible = false" />
+                    <p-button 
+                        label="Save" 
+                        severity="primary" 
+                        (onClick)="submitAddPhotoForm()" />
+                </ng-template>
+            </p-dialog>  
+            <div class="col-12 field mb-0">
+                <label class="text-xl text-color font-bold" for="files">Choose images</label>
+                <p-fileUpload
+                    #fileUpload
+                    id="files"
+                    accept="image/*"
+                    [multiple]="true" 
+                    showUploadButton="false"
+                    showCancelButton="false"
+                    styleClass="cst-fileUpload"
+                    (onSelect)="onSelect($event,fileUpload)" 
+                >
+                    <ng-template pTemplate="content">
+                        <div class="p-fileupload-files">
+                            @for (item of image_List; track item.file.name) {
+                                <div class="p-fileupload-row">
+                                    <div>
+                                        <p-image
+                                            imageClass="w-3rem sm:w-4rem md:w-5rem lg:w-7rem xl:w-9rem"
+                                            [src]="item.imageUrl"
+                                            [alt]="item.file.name"
+                                            [preview]="true" />
+                                    </div>
+                                    <div class="p-fileupload-filename">{{item.file.name}}</div>
+                                    <div>{{item.file.size / 1024 | number : '1.2-2'}} KB</div>
+                                    <div>
+                                        <p-button (onClick)="deleteFile(item.file.name)">
+                                            <ng-template pTemplate="icon">
+                                                <span class="material-icons">delete</span>
+                                            </ng-template>
+                                        </p-button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </ng-template>
+                </p-fileUpload>
+                <span class="text-color-secondary text-xs">You need to upload at least one image</span>
+            </div>
+            <p-divider class="w-full"></p-divider>
+            <div class="col-12 field mb-0">
+                @if(this.addAjax){
+                    <p-progressBar mode="indeterminate"></p-progressBar>
+                } @else {
+                    <button type="submit" [disabled]="!addForm.valid || this.image_List.length === 0" pButton pRipple class="w-auto">
+                        <span class="p-button-icon p-button-icon-left material-icons" aria-hidden="true">save</span>
+                        <span class="p-button-label">Make auction</span>
+                    </button>
+                }
+            </div>
+        </form>
+    </div>
+</div>

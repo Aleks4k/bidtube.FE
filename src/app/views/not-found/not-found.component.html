@@ -1,0 +1,21 @@
+<div class="px-4 py-8 sm:px-5 md:px-8">
+  <div
+    class="flex flex-column md:flex-row justify-content-center align-items-center gap-7"
+  >
+    <div class="text-center md:text-right">
+      <div class="mt-6 mb-3 font-bold text-6xl text-color">Are you lost?</div>
+      <p class="text-700 text-3xl mt-0 mb-6">
+        Sorry, we couldn't find the page.
+      </p>
+      <button
+        [routerLink]="['/home']"
+        pButton
+        type="button"
+        label="Go back to home page"
+      ></button>
+    </div>
+    <div>
+      <img src="images/404-rocket.png" alt="Image" class="w-full sm:w-26rem" />
+    </div>
+  </div>
+</div>

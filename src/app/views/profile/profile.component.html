@@ -1,0 +1,263 @@
+<div class="flex flex-column h-full">
+    <!--Vidi se samo na velikim ekranima uvek-->
+    <p-breadcrumb class="max-w-full hidden md:block" [model]="items" styleClass="border-0 border-noround surface-ground">
+        <ng-template pTemplate="item" let-item>
+            <div [routerLink]="item.route ? item.route: null">
+                @if(item.icon){
+                    <span class="material-icons">{{ item.icon }}</span>
+                } @else {
+                    <span [class.text-primary]="item.active" [class.font-semibold]="item.active" [class.font-medium]="!item.active">
+                        {{ item.label }}
+                    </span>
+                }
+            </div>
+        </ng-template>
+    </p-breadcrumb>
+    <div class="flex flex-row flex-auto">
+        <!--Sidenav na velikim ekranima vidi se uvek ili navigacija na malim ekranima vidi se samo kada je main ruta odsnosno profile-->
+        <div [ngClass]="{'hidden md:block': this.loadingRouteConfig ? true : (this.profileOutlet !== undefined ? this.profileOutlet.isActivated : false)}" class="w-full md:w-20rem surface-overlay flex-shrink-0 md:static z-1 border-right-1 surface-border select-none">
+            <div class="flex flex-column">
+                <div class="overflow-y-auto">
+                    <ul class="list-none p-1 m-0">
+                        <li>
+                            <div
+                                pRipple
+                                pStyleClass="@next"
+                                enterFromClass="hidden"
+                                enterActiveClass="slidedown"
+                                leaveToClass="hidden"
+                                leaveActiveClass="slideup"
+                                class="p-3 flex align-items-center justify-content-between text-600 cursor-pointer"
+                            >
+                                <span class="font-medium">SETTINGS</span>
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </div>
+                            <ul class="list-none p-0 m-0 overflow-hidden">
+                                <li>
+                                    <a [routerLink]="['./edit']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">General Informations</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a [routerLink]="['./password']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">Password Settings</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="list-none p-1 m-0">
+                        <li>
+                            <div
+                                pRipple
+                                pStyleClass="@next"
+                                enterFromClass="hidden"
+                                enterActiveClass="slidedown"
+                                leaveToClass="hidden"
+                                leaveActiveClass="slideup"
+                                class="p-3 flex align-items-center justify-content-between text-600 cursor-pointer"
+                            >
+                                <span class="font-medium">AUCTIONS</span>
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </div>
+                            <ul class="list-none p-0 m-0 overflow-hidden">
+                                <li>
+                                    <a [routerLink]="['./edit']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">Posted auctions</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a [routerLink]="['./password']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">Bidded auctions</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a [routerLink]="['./password']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">Won auctions</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a [routerLink]="['./password']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">All auctions</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <ul class="list-none p-1 m-0">
+                        <li>
+                            <div
+                                pRipple
+                                pStyleClass="@next"
+                                enterFromClass="hidden"
+                                enterActiveClass="slidedown"
+                                leaveToClass="hidden"
+                                leaveActiveClass="slideup"
+                                class="p-3 flex align-items-center justify-content-between text-600 cursor-pointer"
+                            >
+                                <span class="font-medium">REVIEWS</span>
+                                <span class="material-icons">keyboard_arrow_down</span>
+                            </div>
+                            <ul class="list-none p-0 m-0 overflow-hidden">
+                                <li>
+                                    <a [routerLink]="['./edit']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">Received Reviews</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a [routerLink]="['./password']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">Given Reviews</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a [routerLink]="['./password']" pRipple class="flex align-items-center cursor-pointer p-3 border-round text-700 hover:surface-100 transition-duration-150 transition-colors no-underline">
+                                        <span class="font-medium">All Reviews</span>
+                                        <span class="p-ink"></span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        @if(this.loadingRouteConfig){
+            <!--Loader koji se prikazuje samo između RouteConfigLoadStart i RouteConfigLoadEnd-->
+            <div class="flex-auto">
+                <div class="overlay">
+                    <p-progressSpinner ariaLabel="loading" />
+                </div>
+            </div>
+        } @else {
+            <!--Kompletan ostatak uključujući ruter-outlet - vidi se na velikom ekranu uvek a na malom samo kada je ruta aktivna.-->     
+            <div [ngClass]="{'block': this.profileOutlet !== undefined ? this.profileOutlet.isActivated : false}" class="hidden md:block flex-auto">
+                <router-outlet
+                    #profileOutlet="outlet"
+                ></router-outlet>
+                @if(!this.profileOutlet.isActivated){
+                    <!--Vidi se samo na velikim ekranima ovo ispod to je kao neka mini navigacija.-->
+                    <div class="hidden md:block">
+                        <div class="surface-overlay p-5">
+                            <div class="flex align-items-start flex-column md:flex-row md:justify-content-between">
+                                <div class="flex align-items-start flex-column">
+                                    <div>
+                                        <span class="text-color font-medium text-3xl">{{ this._auth.getUsername() }}</span>
+                                        <div class="flex align-items-start flex-wrap text-sm">
+                                            <div class="mr-5 mt-3">
+                                                <span class="font-medium text-500">Reviews</span>
+                                                @if(!this.loading_Data){
+                                                    <div class="text-700 mt-2">
+                                                        <p-rating [(ngModel)]="this.user_data!.average_rating" [readonly]="true" [cancel]="false" />
+                                                    </div>
+                                                    <div class="text-sm text-600 mt-1">{{ this.user_data?.average_rating }} from {{ this.user_data?.total_reviews }} reviews</div>
+                                                }
+                                                @else {
+                                                    <!--Skeleton zvezdice-->
+                                                    <div class="text-700 mt-2 flex flex-row gap-2">
+                                                        <p-skeleton size="1.2rem"/>
+                                                        <p-skeleton size="1.2rem"/>
+                                                        <p-skeleton size="1.2rem"/>
+                                                        <p-skeleton size="1.2rem"/>
+                                                        <p-skeleton size="1.2rem"/>
+                                                    </div>
+                                                    <!--Skeleton reviews-->
+                                                    <p-skeleton width="10rem" styleClass="mt-1" borderRadius="16px" />
+                                                }
+                                            </div>
+                                            <div class="mr-5 mt-3">
+                                                <span class="font-medium text-500">Posted auctions</span>
+                                                @if(!this.loading_Data){
+                                                    <div class="text-700 mt-2">{{ this.user_data?.posted_auctions }}</div>
+                                                }
+                                                @else {
+                                                    <!--Skeleton posted-->
+                                                    <p-skeleton width="6rem" styleClass="mt-2" borderRadius="16px" />
+                                                }
+                                            </div>
+                                            <div class="mt-3">
+                                                <span class="font-medium text-500">Auctions won</span>
+                                                @if(!this.loading_Data){
+                                                    <div class="text-700 mt-2">{{ this.user_data?.auctions_won }}</div>
+                                                }
+                                                @else{
+                                                    <!--Skeleton won-->
+                                                    <p-skeleton width="6rem" styleClass="mt-2" borderRadius="16px" />
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>   
+                        <div class="surface-overlay px-5 mt-6 pb-5 pt-3 w-full">
+                            <div class="flex align-items-center justify-content-between">
+                                <span class="text-color font-medium text-3xl">My auctions</span>
+                                <div class="flex cursor-pointer">
+                                    <span class="text-sm text-600 line-height-24">View all</span>
+                                    <span class="material-icons text-600">
+                                        chevron_right
+                                    </span>
+                                </div>
+                            </div>
+                            <p-divider />
+                            <div class="flex align-items-start flex-wrap text-sm justify-content-evenly gap-2">
+                                <div pRipple class="flex flex-column text-center border-1 surface-border border-round p-4 hover:surface-100 transition-duration-150 transition-colors cursor-pointer">
+                                    <span class="material-icons text-600 text-6xl">
+                                        post_add
+                                    </span>
+                                    <span class="font-medium text-600">Posted Auctions</span>
+                                </div>
+                                <div pRipple class="flex flex-column text-center border-1 surface-border border-round p-4 hover:surface-100 transition-duration-150 transition-colors cursor-pointer">
+                                    <span class="material-icons text-600 text-6xl">
+                                        gavel
+                                    </span>
+                                    <span class="font-medium text-600">Bidded Auctions</span>
+                                </div>
+                                <div pRipple class="flex flex-column text-center border-1 surface-border border-round p-4 hover:surface-100 transition-duration-150 transition-colors cursor-pointer">
+                                    <span class="material-icons text-600 text-6xl">
+                                        emoji_events
+                                    </span>
+                                    <span class="font-medium text-600">Won Auctions</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="surface-overlay px-5 mt-6 mb-6 pb-5 pt-3 w-full">
+                            <div class="flex align-items-center justify-content-between">
+                                <span class="text-color font-medium text-3xl">My reviews</span>
+                                <div class="flex cursor-pointer">
+                                    <span class="text-sm text-600 line-height-24">View all</span>
+                                    <span class="material-icons text-600">
+                                        chevron_right
+                                    </span>
+                                </div>
+                            </div>
+                            <p-divider />
+                            <div class="flex align-items-start flex-wrap text-sm justify-content-evenly gap-2">
+                                <div pRipple class="flex flex-column text-center border-1 surface-border border-round p-4 hover:surface-100 transition-duration-150 transition-colors cursor-pointer">
+                                    <span class="material-icons text-600 text-6xl">
+                                        grade
+                                    </span>
+                                    <span class="font-medium text-600">Received Reviews</span>
+                                </div>
+                                <div pRipple class="flex flex-column text-center border-1 surface-border border-round p-4 hover:surface-100 transition-duration-150 transition-colors cursor-pointer">
+                                    <span class="material-icons text-600 text-6xl">
+                                        reviews
+                                    </span>
+                                    <span class="font-medium text-600">Given Reviews</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

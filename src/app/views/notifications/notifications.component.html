@@ -1,0 +1,86 @@
+<div class="flex flex-column h-full w-full">
+    <div class="flex">
+        <app-go-back-button [navigateBack]="true" class="md:hidden w-full" label="Notifications"></app-go-back-button>
+    </div>
+    <div class="flex flex-grow-1">
+        <div class="w-full h-full" [ngClass]="{'surface-ground md:py-6 md:px-8': !this.loadedAsOverlay}">
+            <div class="w-full h-full" [ngClass]="{'md:surface-card p-2 md:p-4 md:shadow-2 md:border-round': !this.loadedAsOverlay}">
+                <div class="flex flex-column h-full">
+                    <div class="flex align-items-center justify-content-between">
+                        <span class="hidden md:block text-color font-medium text-2xl">Notifications</span>
+                        <!--Prikazujemo za male ekrane.-->
+                        <div class="flex md:hidden align-items-center justify-content-start mt-2 gap-1">
+                            <p-button (onClick)="notificationFilterChanged(true)" label="All" [rounded]="true" [outlined]="true" [severity]="(findAll$ | async) ? 'primary' : 'secondary'" />
+                            <p-button (onClick)="notificationFilterChanged(false)" label="Unread" [rounded]="true" [outlined]="true" [severity]="(findAll$ | async) ? 'secondary' : 'primary'" />
+                        </div>
+                        <p-menu #menu [model]="items_All" [popup]="true" appendTo="body">
+                            <ng-template pTemplate="item" let-mitem>
+                                <a class="p-menuitem-link" pRipple>
+                                    <span class="material-icons">{{ mitem.icon }}</span>
+                                    <span class="ml-2">{{ mitem.label }}</span>
+                                </a>
+                            </ng-template>
+                        </p-menu>
+                        <div class="flex align-items-center justify-content-end flex-grow-1">
+                            <span (click)="menu.toggle($event)" pRipple class="border-circle material-icons text-xl md:text-2xl text-color-secondary cursor-pointer">
+                                more_vert
+                            </span>
+                        </div>
+                    </div>
+                    <!--Ne prikazujemo na malim ekranima već je prikazano gore.-->
+                    <div class="hidden md:flex align-items-center justify-content-start mt-2 gap-1">
+                        <p-button (onClick)="notificationFilterChanged(true)" label="All" [rounded]="true" [outlined]="true" [severity]="(findAll$ | async) ? 'primary' : 'secondary'" />
+                        <p-button (onClick)="notificationFilterChanged(false)" label="Unread" [rounded]="true" [outlined]="true" [severity]="(findAll$ | async) ? 'secondary' : 'primary'" />
+                    </div>
+                    @if(this.loadedAsOverlay){
+                        <div class="hidden md:flex align-items-center justify-content-end hideOnRoute">
+                            <p-button [routerLink]="['/notifications']" label="Show all" [text]="true" />
+                        </div>
+                    }
+                    <div #scrollerHolder class="flex flex-column flex-grow-1 mt-2">
+                        @if(this.initNotificationsLoaded){
+                            @if(this.notifications === undefined || this.notifications.length === 0){
+                                <div class="flex flex-column align-items-center justify-content-center flex-grow-1">
+                                    <span class="material-icons text-8xl">
+                                        block
+                                    </span>
+                                    <span class="text-5xl text-color font-bold mt-1">No notifications</span>
+                                    <span class="text-sm text-color-secondary">There are currently no notifications</span>
+                                </div>
+                            } @else {
+                                <div class="flex flex-column flex-grow-1">
+                                    <p-scroller 
+                                        [items]="notifications" 
+                                        [itemSize]="196" 
+                                        [showLoader]="true"
+                                        [step]="10"
+                                        [lazy]="true"
+                                        [loading]="lazyLoading" 
+                                        (onLazyLoad)="onLazyLoad($event)" 
+                                        [trackBy]="trackByNotificationId"
+                                        [style]="{ 'height': dynamicHeight + 'px' }">
+                                            <ng-template pTemplate="item" let-item let-options="options">
+                                                <app-notification [notification]="item" class="w-full"></app-notification>
+                                            </ng-template>
+                                    </p-scroller>
+                                </div>
+                            }
+                        } @else {
+                            <!--Na ovaj element h-1rem ništa neće značiti jer će svj flex-grow-1 da preuzme ulogu u određivanju visine. ALI MORA DA STOJI DA NE BI ON AUTOMATSKI ZAUZEO VIŠE NEGO ŠTO MU GROW DAJE!!-->
+                            <div class="h-1rem flex flex-column flex-grow-1 overflow-y-auto">
+                                <div *ngFor="let step of steps_skeleton" class="w-full px-2 mt-2">
+                                    <div class="flex flex-column w-full">
+                                        <p-skeleton styleClass="mb-1 w-5" />
+                                        <p-skeleton styleClass="mb-1 w-full h-3rem"/>
+                                        <p-skeleton styleClass="mb-1 w-4"/>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <!--UCITAJ ITEME a zatim i ono dugme prikazi predhodna obavestenja a sve to treba da bude u scroll-u koji detektuje scrollEnd.-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
